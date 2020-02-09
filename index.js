@@ -15,3 +15,7 @@ bot.onText(/\/roll (.+)/, (msg, match) => {
   const result = chance.rpg(match[1], {sum: true});
   bot.sendMessage(msg.chat.id, result);
 });
+
+bot.on('polling_error', (error) => {
+  console.log(error);
+});
