@@ -13,9 +13,13 @@ bot.onText(/\/kala/, (msg) => {
   bot.sendMessage(msg.chat.id, 'Olet kala');
 });
 
-bot.onText(/\/roll (.+)/, (msg, match) => {
-  console.log(match[1]);
-  const result = chance.rpg(match[1], {sum: true});
+bot.onText(/\/roll (\d*d\d+)/, (msg, match) => {
+  //console.log(match);
+  var d = match[1];
+  if (d.startsWith('d')) {
+    d = '1' + d;
+  }
+  const result = chance.rpg(d, {sum: true});
   bot.sendMessage(msg.chat.id, result);
 });
 
