@@ -2,6 +2,7 @@ import json
 import telegram
 import os
 import logging
+import random
 
 
 # Logging is cool!
@@ -21,6 +22,8 @@ ERROR_RESPONSE = {
     'body': json.dumps('Oops, something went wrong!')
 }
 
+SUITS = ['♠️ ', '♣️ ', '♥️ ', '♦️ ']
+CARDS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 
 def configure_telegram():
     """
@@ -45,18 +48,24 @@ def webhook(event, context):
     bot = configure_telegram()
     logger.info('Event: {}'.format(event))
 
-    if event.get('httpMethod') == 'POST' and event.get('body'): 
+    if event.get('httpMethod') == 'POST' and event.get('body'):
         logger.info('Message received')
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
         chat_id = update.message.chat.id
         text = update.message.text
+        resp = ''
 
         if text == '/start':
-            text = """Hello, human! I am an echo bot, built with Python and the Serverless Framework.
-            You can take a look at my source code here: https://github.com/jonatasbaldin/serverless-telegram-bot.
-            If you have any issues, please drop a tweet to my creator: https://twitter.com/jonatsbaldin. Happy botting!"""
+            resp = 'Olet kala'
 
-        bot.sendMessage(chat_id=chat_id, text=text)
+        if text == '/kortti':
+            n = random.randint(0, 53)
+            if n > 51:
+                resp = '🃏'
+            else:
+                resp = SUITS[n // 13] + CARDS[n % 13]
+
+        bot.sendMessage(chat_id=chat_id, text=resp)
         logger.info('Message sent')
 
         return OK_RESPONSE
