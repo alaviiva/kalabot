@@ -58,7 +58,7 @@ def webhook(event, context):
         if text == '/start':
             resp = 'Olet kala'
 
-        if text == '/kortti':
+        if text.startswith('/kortti'):
             n = random.randint(0, 53)
             if n > 51:
                 resp = '🃏'
