@@ -94,6 +94,9 @@ dist
 # Serverless directories
 .serverless/
 
+#Serverless env
+serverless.env.yml
+
 # FuseBox cache
 .fusebox/
 
