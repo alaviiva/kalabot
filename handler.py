@@ -59,19 +59,24 @@ def webhook(event, context):
             resp = 'Olet kala'
 
         if text.startswith('/kortti'):
-            n = random.randint(0, 53)
-            if n > 51:
-                resp = '🃏'
-            else:
-                resp = SUITS[n // 13] + CARDS[n % 13]
+            resp = kortti(text)
 
-        bot.sendMessage(chat_id=chat_id, text=resp)
-        logger.info('Message sent')
+        if resp != '':
+            bot.sendMessage(chat_id=chat_id, text=resp)
+            logger.info('Message sent')
 
         return OK_RESPONSE
 
     return ERROR_RESPONSE
 
+def kortti(text):
+    n = random.randint(0, 53)
+    if n > 51:
+        resp = '🃏'
+    else:
+        resp = SUITS[n // 13] + CARDS[n % 13]
+
+    return resp
 
 def set_webhook(event, context):
     """
