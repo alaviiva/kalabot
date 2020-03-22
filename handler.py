@@ -3,6 +3,7 @@ import telegram
 import os
 import logging
 import random
+import re
 
 
 # Logging is cool!
@@ -61,6 +62,9 @@ def webhook(event, context):
         if text.startswith('/kortti'):
             resp = kortti(text)
 
+        if text.startswith('/roll'):
+            resp = roll(text)
+
         if resp != '':
             bot.sendMessage(chat_id=chat_id, text=resp)
             logger.info('Message sent')
@@ -77,6 +81,28 @@ def kortti(text):
         resp = SUITS[n // 13] + CARDS[n % 13]
 
     return resp
+
+def roll(text):
+    p = re.compile(r'\d*d\d+')
+    m = p.search(text)
+
+    if not m:
+        return random.randint(1, 100)
+
+    s = m.group().split('d')
+    if s[0] == '':
+        s[0] = 1
+    s[0] = int(s[0])
+    s[1] = int(s[1])
+
+    if s[1] < 1:
+        return 'invalid'
+
+    sum = 0
+    for i in range(s[0]):
+        sum += random.randint(1, s[1])
+
+    return sum
 
 def set_webhook(event, context):
     """
