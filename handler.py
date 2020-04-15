@@ -83,13 +83,15 @@ def kortti(text):
     return resp
 
 def roll(text):
-    p = re.compile(r'\d*d\d+')
+    p = re.compile(r'(\d*d\d+)([+-]\d+)?')
     m = p.search(text)
 
     if not m:
-        return random.randint(1, 100)
+        return 'd100\n' + str(random.randint(1, 100))
 
-    s = m.group().split('d')
+    resp = m.group(0) + '\n'
+
+    s = m.group(1).split('d')
     if s[0] == '':
         s[0] = 1
     s[0] = int(s[0])
@@ -100,9 +102,21 @@ def roll(text):
 
     sum = 0
     for i in range(s[0]):
-        sum += random.randint(1, s[1])
+        r = random.randint(1, s[1])
+        resp += str(r) + ' '
+        sum += r
 
-    return sum
+    s = m.group(2)
+    if s:
+        resp += s + ' '
+        i = int(s[1:])
+        if s[0] == '+':
+            sum += i
+        else:
+            sum -= i
+
+    resp += '= ' + str(sum)
+    return resp
 
 def set_webhook(event, context):
     """
